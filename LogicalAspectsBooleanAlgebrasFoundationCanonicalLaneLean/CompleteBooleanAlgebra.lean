@@ -1,26 +1,36 @@
-import canonicalLaneMathlib.BooleanAlgebraBasics
+import canonicalLaneMathlib.AdmissibleClass
 
 namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
 
-structure CompleteBooleanAlgebraPackage (A : AdmittedObject) where
-  isComplete : Prop
-  arbitraryMeets : (A.algebra.carrier → Prop) → A.algebra.carrier
-  arbitraryJoins : (A.algebra.carrier → Prop) → A.algebra.carrier
-  meetsSatisfy : Prop
-  joinsSatisfy : Prop
+structure CompleteBooleanAlgebraPackage (B : BooleanAlgebraPackage) where
+  inf : Set B.carrier → B.carrier
+  sup : Set B.carrier → B.carrier
+  infDefined : ∀ S : Set B.carrier, inf S = ⋂₀ (Set.image (fun (a : B.carrier) => {x : B.carrier | B.meet x a = a}) S)
+  supDefined : ∀ S : Set B.carrier, sup S = ⋃₀ (Set.image (fun (a : B.carrier) => {x : B.carrier | B.join x a = a}) S)
+  infIsMeet : ∀ a b : B.carrier, inf {a, b} = B.meet a b
+  supIsJoin : ∀ a b : B.carrier, sup {a, b} = B.join a b
+  distributesOverInf : ∀ (S : Set B.carrier) (a : B.carrier), B.meet a (inf S) = inf (Set.image (fun b : B.carrier => B.meet a b) S)
+  distributesOverSup : ∀ (S : Set B.carrier) (a : B.carrier), B.join a (sup S) = sup (Set.image (fun b : B.carrier => B.join a b) S)
 
-def CompleteBooleanAlgebraClosed {A : AdmittedObject} (C : CompleteBooleanAlgebraPackage A) : Prop :=
-  C.isComplete ∧ C.meetsSatisfy ∧ C.joinsSatisfy
+structure CompleteBooleanAlgebraEvidence (B : BooleanAlgebraPackage) (C : CompleteBooleanAlgebraPackage B) where
+  infDefinedClosed : C.infDefined
+  supDefinedClosed : C.supDefined
+  infIsMeetClosed : C.infIsMeet
+  supIsJoinClosed : C.supIsJoin
+  distributesOverInfClosed : C.distributesOverInf
+  distributesOverSupClosed : C.distributesOverSup
 
-structure CompleteBooleanAlgebraEvidence {A : AdmittedObject} (C : CompleteBooleanAlgebraPackage A) where
-  isCompleteClosed : C.isComplete
-  meetsSatisfyClosed : C.meetsSatisfy
-  joinsSatisfyClosed : C.joinsSatisfy
+def CompleteBooleanAlgebraClosed (B : BooleanAlgebraPackage) (C : CompleteBooleanAlgebraPackage B) : Prop :=
+  C.infDefined ∧ C.supDefined ∧ C.infIsMeet ∧ C.supIsJoin ∧ C.distributesOverInf ∧ C.distributesOverSup
 
-theorem complete_boolean_algebra_closed_from_evidence {A : AdmittedObject} (C : CompleteBooleanAlgebraPackage A) (E : CompleteBooleanAlgebraEvidence C) :
-    CompleteBooleanAlgebraClosed C :=
-  And.intro E.isCompleteClosed (And.intro E.meetsSatisfyClosed E.joinsSatisfyClosed)
+theorem complete_boolean_algebra_closed_from_evidence (B : BooleanAlgebraPackage) (C : CompleteBooleanAlgebraPackage B) (E : CompleteBooleanAlgebraEvidence B C) :
+    CompleteBooleanAlgebraClosed B C := by
+  exact And.intro E.infDefinedClosed
+    (And.intro E.supDefinedClosed
+      (And.intro E.infIsMeetClosed
+        (And.intro E.supIsJoinClosed
+          (And.intro E.distributesOverInfClosed E.distributesOverSupClosed))))
 
 end LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
 end HautevilleHouse
