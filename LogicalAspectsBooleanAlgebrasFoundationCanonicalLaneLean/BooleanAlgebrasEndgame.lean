@@ -1,0 +1,19 @@
+import canonicalLaneMathlib.AdmissibleClass
+import HautevilleHouse.LogicalAspectsBooleanAlgebrasFoundation.BooleanAlgebraStructure
+import HautevilleHouse.LogicalAspectsBooleanAlgebrasFoundation.HomomorphismIdeals
+import HautevilleHouse.LogicalAspectsBooleanAlgebrasFoundation.StoneRepresentation
+import HautevilleHouse.LogicalAspectsBooleanAlgebrasFoundation.CompleteAtoms
+import HautevilleHouse.LogicalAspectsBooleanAlgebrasFoundation.FilterUltrafilter
+
+namespace HautevilleHouse
+namespace LogicalAspectsBooleanAlgebrasFoundation
+
+def ConstrainedBooleanAlgebraClosure (A : AdmissibleClass) : Prop :=
+  bridgeClosed A ∧ gateClosed A
+
+theorem constrained_boolean_algebra_endgame (A : AdmissibleClass) :
+    ConstrainedBooleanAlgebraClosure A := by
+  exact And.intro (bridge_from_admissible_class A) (gate_from_admissible_class A)
+
+end LogicalAspectsBooleanAlgebrasFoundation
+end HautevilleHouse

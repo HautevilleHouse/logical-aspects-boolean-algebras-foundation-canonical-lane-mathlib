@@ -1,38 +1,31 @@
-import HautevilleHouse.LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean.BooleanAlgebraStructure
+import canonicalLaneMathlib.AdmissibleClass
+import HautevilleHouse.LogicalAspectsBooleanAlgebrasFoundation.BooleanAlgebraStructure
 
 namespace HautevilleHouse
-namespace LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
+namespace LogicalAspectsBooleanAlgebrasFoundation
 
-structure FilterPackage where
-  carrier : Type u
-  order : carrier → carrier → Prop
-  filter : Set carrier
-  upwardClosed : Prop
-  finiteMeetClosed : Prop
+structure Filter (B : BooleanAlgebraPackage) where
+  subset : Set B.carrier
+  containsTop : B.top ∈ subset
+  closedUnderMeet : ∀ a b : B.carrier, a ∈ subset → b ∈ subset → B.meet a b ∈ subset
+  upwardClosed : ∀ a b : B.carrier, a ∈ subset → B.meet a b = a → b ∈ subset
 
-structure FilterEvidence (F : FilterPackage) where
-  upwardClosedClosed : F.upwardClosed
-  finiteMeetClosedClosed : F.finiteMeetClosed
+def FilterClosed {B : BooleanAlgebraPackage} (F : Filter B) : Prop :=
+  F.containsTop ∧ F.closedUnderMeet ∧ F.upwardClosed
 
-def FilterClosed (F : FilterPackage) : Prop :=
-  F.upwardClosed ∧ F.finiteMeetClosed
+structure Ultrafilter {B : BooleanAlgebraPackage} (F : Filter B) where
+  proper : F.subset ≠ Set.univ
+  maximalCondition : ∀ (G : Filter B), F.subset ⊆ G.subset → G.subset = F.subset ∨ G.subset = Set.univ
 
-theorem filter_closed_from_evidence (F : FilterPackage) (E : FilterEvidence F) : FilterClosed F := by
-  exact And.intro E.upwardClosedClosed E.finiteMeetClosedClosed
+theorem ultrafilter_characterization {B : BooleanAlgebraPackage} (F : Filter B) (hF : FilterClosed F) :
+    (∃ (U : Ultrafilter F), True) ↔ ∀ a : B.carrier, a ∈ F.subset ∨ B.complement a ∈ F.subset := by
+  constructor
+  · intro hU a
+    -- Use maximality to show one must be in the ultrafilter
+    sorry
+  · intro h
+    -- Construct the ultrafilter extending F using Zorn's lemma
+    sorry
 
-structure UltrafilterPackage extends FilterPackage where
-  maximal : Prop
-  maximalTerm : maximal
-
-structure UltrafilterEvidence (U : UltrafilterPackage) where
-  filterClosed : FilterClosed U.toFilterPackage
-  maximalClosed : U.maximal
-
-def UltrafilterClosed (U : UltrafilterPackage) : Prop :=
-  FilterClosed U.toFilterPackage ∧ U.maximal
-
-theorem ultrafilter_closed_from_evidence (U : UltrafilterPackage) (E : UltrafilterEvidence U) : UltrafilterClosed U := by
-  exact And.intro E.filterClosed E.maximalClosed
-
-end LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
+end LogicalAspectsBooleanAlgebrasFoundation
 end HautevilleHouse
