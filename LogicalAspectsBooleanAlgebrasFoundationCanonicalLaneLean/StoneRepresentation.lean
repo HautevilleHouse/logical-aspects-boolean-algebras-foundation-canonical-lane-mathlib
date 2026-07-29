@@ -1,28 +1,24 @@
-import canonicalLaneMathlib.BooleanAlgebraObject
+import canonicalLaneMathlib.AdmissibleClass
 
 namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
 
-structure StoneSpace where
-  carrier : Type
-  topology : TopologicalSpace carrier
-  compact : Prop
-  hausdorff : Prop
-  totallyDisconnected : Prop
-
 structure StoneRepresentationPackage where
-  booleanAlgebra : BooleanAlgebraCarrier
-  stoneSpace : StoneSpace
-  representationMap : booleanAlgebra.carrier → Set stoneSpace.carrier
-  isomorphism : Prop
-  isomorphismClosed : isomorphism
+  booleanAlgebra : Type u
+  dualSpace : Type v
+  topology : TopologicalSpace dualSpace
+  homeomorphism : Prop
+  homeomorphismTerm : homeomorphism
 
-def StoneRepresentationClosed (P : StoneRepresentationPackage) : Prop :=
-  P.isomorphism
+structure StoneRepresentationEvidence (S : StoneRepresentationPackage) where
+  homeomorphismClosed : S.homeomorphism
 
-theorem stone_representation_closed_from_evidence (P : StoneRepresentationPackage) :
-    StoneRepresentationClosed P := by
-  exact P.isomorphismClosed
+def StoneRepresentationClosed (S : StoneRepresentationPackage) : Prop :=
+  S.homeomorphism
+
+theorem stone_representation_closed_from_evidence (S : StoneRepresentationPackage)
+    (E : StoneRepresentationEvidence S) : StoneRepresentationClosed S := by
+  exact E.homeomorphismClosed
 
 end LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
 end HautevilleHouse

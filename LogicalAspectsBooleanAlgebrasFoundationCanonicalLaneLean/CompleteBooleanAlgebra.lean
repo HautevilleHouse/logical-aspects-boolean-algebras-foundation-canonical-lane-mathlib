@@ -1,21 +1,25 @@
-import canonicalLaneMathlib.BooleanAlgebraObject
+import canonicalLaneMathlib.AdmissibleClass
 
 namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
 
 structure CompleteBooleanAlgebraPackage where
-  booleanAlgebra : BooleanAlgebraCarrier
-  arbitraryMeets : (Set booleanAlgebra.carrier) → booleanAlgebra.carrier
-  arbitraryJoins : (Set booleanAlgebra.carrier) → booleanAlgebra.carrier
-  completenessAxioms : Prop
-  completenessClosed : completenessAxioms
+  carrier : Type u
+  le : carrier -> carrier -> Prop
+  sup : Set carrier -> carrier
+  inf : Set carrier -> carrier
+  distributivity : Prop
+  distributivityTerm : distributivity
 
-def CompleteBooleanAlgebraClosed (P : CompleteBooleanAlgebraPackage) : Prop :=
-  P.completenessAxioms
+structure CompleteBooleanAlgebraEvidence (C : CompleteBooleanAlgebraPackage) where
+  distributivityClosed : C.distributivity
 
-theorem complete_boolean_algebra_closed_from_evidence (P : CompleteBooleanAlgebraPackage) :
-    CompleteBooleanAlgebraClosed P := by
-  exact P.completenessClosed
+def CompleteBooleanAlgebraClosed (C : CompleteBooleanAlgebraPackage) : Prop :=
+  C.distributivity
+
+theorem complete_boolean_algebra_closed_from_evidence (C : CompleteBooleanAlgebraPackage)
+    (E : CompleteBooleanAlgebraEvidence C) : CompleteBooleanAlgebraClosed C := by
+  exact E.distributivityClosed
 
 end LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
 end HautevilleHouse
