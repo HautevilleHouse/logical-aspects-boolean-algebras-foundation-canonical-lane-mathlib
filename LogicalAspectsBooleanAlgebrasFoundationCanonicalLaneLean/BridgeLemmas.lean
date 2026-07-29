@@ -4,11 +4,11 @@ namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
 
 def bridgeClosed (A : AdmissibleClass) : Prop :=
-  A.object.conclusion
+  BooleanAlgebraClosed A.object
 
 theorem bridge_from_admissible_class (A : AdmissibleClass) :
-    bridgeClosed A :=
-  A.object.conclusion.elim id id
+    bridgeClosed A := by
+  exact A.object.conclusion
 
 end LogicalAspectsBooleanAlgebrasFoundationCanonicalLaneLean
 end HautevilleHouse
